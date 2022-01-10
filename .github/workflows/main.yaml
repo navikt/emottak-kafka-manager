@@ -93,11 +93,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo ${GITHUB_TOKEN} | docker login ghcr.io -u ${GITHUB_REPOSITORY} --password-stdin
-          docker build -t ${IMAGE}:${IMAGE_TAG} .
-          docker push ${IMAGE}:${IMAGE_TAG}
+          docker build -t ${IMAGE} .
+          docker push ${IMAGE}
   "deployAppToDev":
     name: "Deploy app to dev"
-    needs: "build"
+    needs: "test-build-and-push"
     runs-on: "ubuntu-18.04"
     steps:
       - uses: "actions/checkout@v2"
@@ -123,7 +123,7 @@ jobs:
           "VARS": ".nais/prod.yaml"
   "deployAlertsToDev":
     name: "Deploy alerts to dev"
-    needs: "build"
+    needs: "test-build-and-push"
     runs-on: "ubuntu-18.04"
     steps:
       - uses: "actions/checkout@v2"
@@ -136,7 +136,7 @@ jobs:
           "VARS": ".nais/dev.yaml"
   "deployAlertsToProd":
     name: "Deploy alerts to prod"
-    needs: "build"
+    needs: "test-build-and-push"
     runs-on: "ubuntu-18.04"
     steps:
       - uses: "actions/checkout@v2"
