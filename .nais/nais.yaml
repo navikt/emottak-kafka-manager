@@ -43,13 +43,13 @@ spec:
         {
           "topics": [
             {
-              "name": "ytelser",
+              "name": "team-emottak.ytelser",
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
               "valueDeserializerType": "STRING"
             },
             {
-              "name": "ytelser2",
+              "name": "team-emottak.ytelser2",
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
               "valueDeserializerType": "STRING"
