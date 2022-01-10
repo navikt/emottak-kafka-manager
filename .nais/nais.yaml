@@ -8,9 +8,9 @@ metadata:
 spec:
   image: {{image}}
   ingresses:
-    { { #each ingresses as |url|}}
-        - {{url } }
-      {{/each}}
+  {{#each ingresses as |url|}}
+    - {{url}}
+  {{/each}}
   prometheus:
     enabled: true
     path: /internal/prometheus
