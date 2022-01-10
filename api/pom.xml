@@ -11,8 +11,8 @@
     </parent>
 
     <groupId>no.nav.kafkamanager</groupId>
-    <artifactId>kafkamanager</artifactId>
-    <name>kafka-manager</name>
+    <artifactId>emottak-kafkamanager</artifactId>
+    <name>emottak-kafka-manager</name>
     <description>API for managing kafka topics</description>
 
     <properties>
@@ -116,7 +116,7 @@
     </dependencies>
 
     <build>
-        <finalName>kafka-manager</finalName>
+        <finalName>emottak-kafka-manager</finalName>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <plugins>
