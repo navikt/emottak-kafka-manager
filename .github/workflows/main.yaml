@@ -95,9 +95,9 @@ jobs:
     needs: "test-build-and-push"
     runs-on: "ubuntu-18.04"
     steps:
-      - uses: "actions/checkout@v2"
+      - uses: "actions/checkout@v4"
       - name: "Deploy to DEV"
-        uses: "nais/deploy/actions/deploy@v1"
+        uses: "nais/deploy/actions/deploy@v2"
         env:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-fss"
