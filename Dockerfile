@@ -1,3 +1,8 @@
-FROM ghcr.io/navikt/poao-baseimages/java:11
+FROM gcr.io/distroless/java21
+ENV TZ="Europe/Oslo"
+WORKDIR /app
 COPY /api/target/emottak-kafka-manager.jar app.jar
-COPY /web-app/build /app/public
+COPY /web-app/dist /app/public
+EXPOSE 8080
+USER nonroot
+CMD ["app.jar"]

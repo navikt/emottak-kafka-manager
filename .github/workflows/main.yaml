@@ -1,41 +1,82 @@
 name: Build, push and deploy
 on:
+  workflow_dispatch:
   push:
     branches:
-      - "main"
+      - main
 env:
-  IMAGE: "ghcr.io/${{ github.repository }}:${{ github.sha }}"
+  IMAGE: ghcr.io/${{ github.repository }}/emottak-kafka-manager
+
 jobs:
+  test-api:
+    name: Run tests
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run maven tests
+        run: mvn -f ./api/pom.xml -B verify
+
+  test-web-app:
+    name: Run tests
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'web-app/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps --prefix web-app
+
+      - name: Run tests
+        run: npm run test --prefix web-app
+
   test-build-and-push:
     name: Test, build and push
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
         with:
-          java-version: 11
+          java-version: 21
+          distribution: 'temurin'
+          cache: 'maven'
 
       - name: Setup node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: '12.x'
-
-      - name: Set up cache
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'web-app/package-lock.json'
 
       - name: Build maven artifacts
         run: mvn -f ./api/pom.xml -B package
 
       - name: Install dependencies
-        run: npm ci --prefix web-app
+        run: npm ci --legacy-peer-deps --prefix web-app
 
       - name: Run web-app tests
         run: npm test --prefix web-app
@@ -43,17 +84,13 @@ jobs:
       - name: Build frontend assets
         run: npm run build --prefix web-app
 
-      - name: Create image tag
-        run: echo "IMAGE_TAG=2.$(TZ=\"Europe/Oslo\" date +%Y.%m.%d_%H.%M)-$(git rev-parse --short=12 HEAD)" >> $GITHUB_ENV
-
-      - name: Build and push Docker image
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo ${GITHUB_TOKEN} | docker login ghcr.io -u ${GITHUB_REPOSITORY} --password-stdin
-          docker build -t ${IMAGE} .
-          docker push ${IMAGE}
-  "deployAppToDev":
+      - name: Build and push
+        uses: nais/docker-build-push@v0
+        with:
+          team: poao
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+  "deploy-to-dev":
     name: "Deploy app to dev"
     needs: "test-build-and-push"
     runs-on: "ubuntu-18.04"
@@ -63,45 +100,6 @@ jobs:
         uses: "nais/deploy/actions/deploy@v1"
         env:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          "CLUSTER": "dev-gcp"
+          "CLUSTER": "dev-fss"
           "RESOURCE": ".nais/nais.yaml"
-          "VARS": ".nais/dev.yaml"
-  "deployAppToProd":
-    name: "Deploy app to prod"
-    needs: "deployAppToDev"
-    runs-on: "ubuntu-18.04"
-    steps:
-      - uses: "actions/checkout@v2"
-      - name: "Deploy to PROD"
-        uses: "nais/deploy/actions/deploy@v1"
-        env:
-          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          "CLUSTER": "prod-gcp"
-          "RESOURCE": ".nais/nais.yaml"
-          "VARS": ".nais/prod.yaml"
-  "deployAlertsToDev":
-    name: "Deploy alerts to dev"
-    needs: "test-build-and-push"
-    runs-on: "ubuntu-18.04"
-    steps:
-      - uses: "actions/checkout@v2"
-      - name: "Deploy alerts to DEV"
-        uses: "nais/deploy/actions/deploy@v1"
-        env:
-          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          "CLUSTER": "dev-gcp"
-          "RESOURCE": ".nais/alerts-dev.yaml"
-          "VARS": ".nais/dev.yaml"
-  "deployAlertsToProd":
-    name: "Deploy alerts to prod"
-    needs: "test-build-and-push"
-    runs-on: "ubuntu-18.04"
-    steps:
-      - uses: "actions/checkout@v2"
-      - name: "Deploy alerts to PROD"
-        uses: "nais/deploy/actions/deploy@v1"
-        env:
-          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          "CLUSTER": "prod-gcp"
-          "RESOURCE": ".nais/alerts-prod.yaml"
-          "VARS": ".nais/prod.yaml"
+#          "VARS": ".nais/dev.yaml"
