@@ -1,5 +1,9 @@
 name: Build, push and deploy
-on: push
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 env:
   IMAGE: ghcr.io/${{ github.repository }}/emottak-kafka-manager
 
@@ -86,3 +90,16 @@ jobs:
           team: poao
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+  "deploy-to-dev":
+    name: "Deploy app to dev"
+    needs: "test-build-and-push"
+    runs-on: "ubuntu-18.04"
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Deploy to DEV"
+        uses: "nais/deploy/actions/deploy@v1"
+        env:
+          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          "CLUSTER": "dev-fss"
+          "RESOURCE": ".nais/nais.yaml"
+#          "VARS": ".nais/dev.yaml"

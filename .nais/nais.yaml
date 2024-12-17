@@ -6,11 +6,11 @@ metadata:
   labels:
     team: team-emottak
 spec:
-  image: {{image}}
+  image: europe-north1-docker.pkg.dev/nais-management-233d/poao/kafka-manager:2024.10.25-13.23-52ea038
+  port: 8080
+  webproxy: true
   ingresses:
-  {{#each ingresses as |url|}}
-    - {{url}}
-  {{/each}}
+    - https://emottak-kafka-manager.dev.intern.nav.no
   prometheus:
     enabled: true
     path: /internal/prometheus
@@ -35,21 +35,35 @@ spec:
     application:
       enabled: true
       tenant: nav.no
+      claims:
+        groups:
+          - id: b2da08e5-92e6-4731-948c-08892dcca2c9 # Required for authorization
   kafka: # Optional. Required for Aiven
-    pool: {{kafkaPool}}
+    pool: nav-dev
+#  vault: # Optional. Required for on-prem (the env variables SERVICE_USER_NAME, SERVICE_USER_PASSWORD can also be used)
+#    enabled: true
+#    paths:
+#      - kvPath: /serviceuser/data/<dev/srvemottak-kafka-manager    # ikke opprettet
+#        mountPath: /var/run/secrets/nais.io/service_user
   env:
     - name: APP_CONFIG_JSON # Required
       value: >
         {
           "topics": [
             {
-              "name": "team-emottak.ytelser",
+              "name": "smtp.in.ebxml.payload",
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
               "valueDeserializerType": "STRING"
             },
             {
-              "name": "team-emottak.ytelser2",
+              "name": "smtp.in.ebxml.signal",
+              "location": "AIVEN",
+              "keyDeserializerType": "STRING",
+              "valueDeserializerType": "STRING"
+            },
+            {
+              "name": "smtp.out.ebxml.signal",
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
               "valueDeserializerType": "STRING"
