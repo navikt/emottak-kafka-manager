@@ -5,7 +5,7 @@ on:
     branches:
       - main
 env:
-  IMAGE: ghcr.io/${{ github.repository }}/emottak-kafka-manager:${{ github.sha }}
+  IMAGE: europe-north1-docker.pkg.dev/nais-management-233d/team-emottak/emottak-kafka-manager
 
 jobs:
   test-api:
