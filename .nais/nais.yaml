@@ -51,19 +51,19 @@ spec:
         {
           "topics": [
             {
-              "name": "smtp.in.ebxml.payload",
+              "name": "team-emottak.smtp.in.ebxml.payload",
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
               "valueDeserializerType": "STRING"
             },
             {
-              "name": "smtp.in.ebxml.signal",
+              "name": "team-emottak.smtp.in.ebxml.signal",
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
               "valueDeserializerType": "STRING"
             },
             {
-              "name": "smtp.out.ebxml.signal",
+              "name": "team-emottak.smtp.out.ebxml.signal",
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
               "valueDeserializerType": "STRING"
