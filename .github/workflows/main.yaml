@@ -5,7 +5,7 @@ on:
     branches:
       - main
 env:
-  IMAGE: ghcr.io/${{ github.repository }}/emottak-kafka-manager
+  IMAGE: ghcr.io/${{ github.repository }}/emottak-kafka-manager:${{ github.sha }}
 
 jobs:
   test-api:
