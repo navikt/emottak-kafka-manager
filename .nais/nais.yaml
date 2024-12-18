@@ -6,7 +6,7 @@ metadata:
   labels:
     team: team-emottak
 spec:
-  image: europe-north1-docker.pkg.dev/nais-management-233d/poao/kafka-manager:2024.10.25-13.23-52ea038
+  image: {{image}}
   port: 8080
   webproxy: true
   ingresses:

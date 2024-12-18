@@ -101,5 +101,6 @@ jobs:
         env:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-gcp"
+          "IMAGE": ${{env.IMAGE}}
           "RESOURCE": ".nais/nais.yaml"
 #          "VARS": ".nais/dev.yaml"
