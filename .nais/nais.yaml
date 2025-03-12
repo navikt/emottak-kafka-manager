@@ -79,6 +79,12 @@ spec:
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
               "valueDeserializerType": "STRING"
+            },
+            {
+              "name": "team-emottak.event.log",
+              "location": "AIVEN",
+              "keyDeserializerType": "STRING",
+              "valueDeserializerType": "STRING"
             }
           ]
         }
