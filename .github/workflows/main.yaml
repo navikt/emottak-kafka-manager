@@ -1,4 +1,4 @@
-name: Build, push and deploy
+name: 'Build, push and deploy'
 on:
   workflow_dispatch:
   push:
@@ -8,99 +8,61 @@ env:
   IMAGE: europe-north1-docker.pkg.dev/nais-management-233d/team-emottak/emottak-kafka-manager:2024.12.18-10.20-b4f0ff1
 
 jobs:
-  test-api:
-    name: Run tests
-    runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/main'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: 'temurin'
-          cache: 'maven'
-
-      - name: Run maven tests
-        run: mvn -f ./api/pom.xml -B verify
-
-  test-web-app:
-    name: Run tests
-    runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/main'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: 'npm'
-          cache-dependency-path: 'web-app/package-lock.json'
-
-      - name: Install dependencies
-        run: npm ci --legacy-peer-deps --prefix web-app
-
-      - name: Run tests
-        run: npm run test --prefix web-app
 
   test-build-and-push:
-    name: Test, build and push
+    name: 'Test, build and push'
     permissions:
       contents: 'read'
       id-token: 'write'
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout
+      - name: 'Checkout'
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
+      - name: 'Set up JDK 21'
         uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Setup node
+      - name: 'Setup node'
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: 'web-app/package-lock.json'
 
-      - name: Build maven artifacts
+      - name: 'Build maven artifacts'
         run: mvn -f ./api/pom.xml -B package
 
-      - name: Install dependencies
+      - name: 'Install dependencies'
         run: npm ci --legacy-peer-deps --prefix web-app
 
-      - name: Run web-app tests
+      - name: 'Run web-app tests'
         run: npm test --prefix web-app
 
-      - name: Build frontend assets
+      - name: 'Build frontend assets'
         run: npm run build --prefix web-app
 
-      - name: Build and push
+      - name: 'Build and push'
         uses: nais/docker-build-push@v0
         with:
           team: team-emottak
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-  "deploy-to-dev":
-    name: "Deploy app to dev"
-    needs: "test-build-and-push"
+
+  deploy-to-dev:
+    name: 'Deploy app to dev'
+    needs: test-build-and-push
     runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@v4"
-      - name: "Deploy to DEV"
-        uses: "nais/deploy/actions/deploy@v2"
+      - uses: actions/checkout@v4
+      - name: 'Deploy to DEV'
+        uses: nais/deploy/actions/deploy@v2
         env:
-          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          "CLUSTER": "dev-gcp"
+          "APIKEY": '${{ secrets.NAIS_DEPLOY_APIKEY }}'
+          "CLUSTER": 'dev-gcp'
           "IMAGE": ${{env.IMAGE}}
-          "RESOURCE": ".nais/nais.yaml"
-#          "VARS": ".nais/dev.yaml"
+          "RESOURCE": '.nais/nais.yaml'
+#          "VARS": '.nais/dev.yaml'
