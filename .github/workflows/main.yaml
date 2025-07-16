@@ -10,7 +10,9 @@ jobs:
   test-build-and-push:
     name: 'Test, build and push'
     permissions:
-      contents: 'read'
+      packages: 'write'
+      repository-projects: 'write'
+      contents: 'write'
       id-token: 'write'
     runs-on: ubuntu-latest
     steps:
@@ -59,6 +61,9 @@ jobs:
     name: 'Deploy app to dev'
     needs: test-build-and-push
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     steps:
       - uses: actions/checkout@v4
       - name: 'Deploy to DEV'
@@ -66,6 +71,6 @@ jobs:
         env:
           APIKEY: '${{ secrets.NAIS_DEPLOY_APIKEY }}'
           CLUSTER: 'dev-gcp'
-          IMAGE: ${{ needs.build.outputs.image }}
+          IMAGE: ${{ needs.test-build-and-push.outputs.image }}
           RESOURCE: '.nais/nais.yaml'
 #          VARS: '.nais/dev.yaml'
