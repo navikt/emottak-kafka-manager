@@ -145,7 +145,7 @@ spec:
 
 ## Image repository
 
-Per 01.08.2023 så lastes Docker images opp til Google Artifact Registry (GAR) - i skrivende stund er dette URL-en der disse kan finnes https://console.cloud.google.com/artifacts/docker/nais-management-233d/europe-north1/poao/kafka-manager.
+Per 01.08.2023 så lastes Docker images opp til Google Artifact Registry (GAR) - i skrivende stund er dette URL-en der disse kan finnes https://console.cloud.google.com/artifacts/docker/nais-management-233d/europe-north1/team-emottak/emottak-kafka-manager.
 Referer forøvrig til [NAIS-dokumentasjonen](https://doc.nais.io/deployment/image-repository/) for spørsmål/svar vedrørende bruk av Docker images fra GAR.
 
 ## NB
