@@ -82,3 +82,4 @@ jobs:
           IMAGE: ${{ needs.test-build-and-push.outputs.image }}
           RESOURCE: '.nais/nais.yaml'
 #          VARS: '.nais/dev.yaml'
+
