@@ -45,6 +45,17 @@ jobs:
       - name: 'Build frontend assets'
         run: npm run build --prefix web-app
 
+      - name: 'Generate tag'
+        shell: bash
+        id: generate-tag
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: |
+          GITHUB_REF_NAME=${GITHUB_REF_NAME//\//_}
+          echo "build-tag=$GITHUB_REF_NAME"
+          echo "${build-tag}"
+          sed -i "s/__VERSION__/${build-tag}/g" web-app/index.html
+
       - name: 'Build and push'
         uses: nais/docker-build-push@v0
         id: docker-push
@@ -54,9 +65,6 @@ jobs:
           dockerfile: Dockerfile
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-
-      - name: 'Output-image'
-        run: echo "${{ steps.docker-push.outputs.image }}"
 
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
