@@ -44,7 +44,7 @@ jobs:
 
       - name: 'Get current date'
         id: date
-        run: echo "{date}={$(date +'%Y.%m.%d-%H.%M')}" >> $GITHUB_OUTPUT
+        run: echo "date={$(date +'%Y.%m.%d-%H.%M')}" >> $GITHUB_OUTPUT
 
       - name: 'Set version in index.html'
         run: sed -i "s/__VERSION__/${{ steps.date.outputs.date }}/g" web-app/index.html
