@@ -42,19 +42,15 @@ jobs:
       - name: 'Run web-app tests'
         run: npm test --prefix web-app
 
+      - name: 'Get current date'
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y.%m.%d-%H.%M')"
+
+      - name: 'Set version in index.html'
+        run: sed -i "s/__VERSION__/${{ steps.date.outputs.date }}/g" web-app/index.html
+
       - name: 'Build frontend assets'
         run: npm run build --prefix web-app
-
-      - name: 'Generate tag'
-        shell: bash
-        id: generate-tag
-        env:
-          GITHUB_REF_NAME: ${{ github.ref_name }}
-        run: |
-          GITHUB_REF_NAME=${GITHUB_REF_NAME//\//_}
-          echo "build-tag=$GITHUB_REF_NAME"
-          echo "${build-tag}"
-          sed -i "s/__VERSION__/${build-tag}/g" web-app/index.html
 
       - name: 'Build and push'
         uses: nais/docker-build-push@v0
