@@ -54,6 +54,10 @@ jobs:
           dockerfile: Dockerfile
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: 'Output-image'
+        run: echo "${{ steps.docker-push.outputs.image }}"
+
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
 
