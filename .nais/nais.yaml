@@ -99,7 +99,7 @@ spec:
               "valueDeserializerType": "STRING"
             },
             {
-              "name": "team-emottak.state.dialog",}
+              "name": "team-emottak.state.dialog",
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
               "valueDeserializerType": "STRING"
