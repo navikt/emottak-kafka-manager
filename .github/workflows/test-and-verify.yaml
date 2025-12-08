@@ -1,8 +1,8 @@
 name: 'Test and verify build'
-on: workflow_dispatch
 
-env:
-  IMAGE: europe-north1-docker.pkg.dev/nais-management-233d/team-emottak/emottak-kafka-manager:2024.12.18-10.20-b4f0ff1
+on:
+  workflow_dispatch:
+  pull_request:
 
 jobs:
   test-api:
