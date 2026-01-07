@@ -1,9 +1,6 @@
-name: 'Build, push and deploy to DEV'
+name: 'Build, push and deploy to PROD'
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
 
@@ -65,8 +62,8 @@ jobs:
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
 
-  deploy-to-dev:
-    name: 'Deploy app to dev'
+  deploy-to-prod:
+    name: 'Deploy app to PROD'
     needs: test-build-and-push
     runs-on: ubuntu-latest
     permissions:
@@ -74,11 +71,11 @@ jobs:
       id-token: 'write'
     steps:
       - uses: actions/checkout@v6
-      - name: 'Deploy to DEV'
+      - name: 'Deploy to PROD'
         uses: nais/deploy/actions/deploy@v2
         env:
-          CLUSTER: 'dev-gcp'
+          CLUSTER: 'prod-gcp'
           IMAGE: ${{ needs.test-build-and-push.outputs.image }}
           RESOURCE: '.nais/nais.yaml'
-          VARS: '.nais/dev.yaml'
+          VARS: '.nais/prod.yaml'
 
