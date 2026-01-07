@@ -1,3 +1,2 @@
-ingresses:
-- "https://emottak-kafka-manager.dev.intern.nav.no"
+ingress: https://emottak-kafka-manager.intern.dev.nav.no
 kafkaPool: nav-dev

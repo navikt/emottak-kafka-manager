@@ -81,5 +81,5 @@ jobs:
           CLUSTER: 'dev-gcp'
           IMAGE: ${{ needs.test-build-and-push.outputs.image }}
           RESOURCE: '.nais/nais.yaml'
-#          VARS: '.nais/dev.yaml'
+          VARS: '.nais/dev.yaml'
 

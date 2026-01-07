@@ -10,7 +10,7 @@ spec:
   port: 8080
   webproxy: true
   ingresses:
-    - https://emottak-kafka-manager.intern.dev.nav.no
+    - {{ingress}}
   prometheus:
     enabled: true
     path: /internal/prometheus
@@ -39,7 +39,7 @@ spec:
         groups:
           - id: b2da08e5-92e6-4731-948c-08892dcca2c9 # Required for authorization
   kafka: # Optional. Required for Aiven
-    pool: nav-dev
+    pool:  {{kafkaPool}}
   #  vault: # Optional. Required for on-prem (the env variables SERVICE_USER_NAME, SERVICE_USER_PASSWORD can also be used)
   #    enabled: true
   #    paths:
