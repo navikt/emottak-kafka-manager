@@ -103,13 +103,13 @@ spec:
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
               "valueDeserializerType": "STRING"
-            }
+            },
             {
               "name": "team-emottak.ebms.in.payload",
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
               "valueDeserializerType": "STRING"
-            }
+            },
             {
               "name": "team-emottak.ebms.out.payload",
               "location": "AIVEN",
