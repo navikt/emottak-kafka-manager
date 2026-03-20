@@ -87,19 +87,7 @@ spec:
               "valueDeserializerType": "STRING"
             },
             {
-              "name": "team-emottak.common.topic.for.development",
-              "location": "AIVEN",
-              "keyDeserializerType": "STRING",
-              "valueDeserializerType": "STRING"
-            },
-            {
               "name": "team-emottak.ebms.message.details",
-              "location": "AIVEN",
-              "keyDeserializerType": "STRING",
-              "valueDeserializerType": "STRING"
-            },
-            {
-              "name": "team-emottak.state.dialog",
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
               "valueDeserializerType": "STRING"
