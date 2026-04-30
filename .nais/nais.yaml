@@ -81,6 +81,12 @@ spec:
               "valueDeserializerType": "STRING"
             },
             {
+              "name": "team-emottak.ebxml.retry.out",
+              "location": "AIVEN",
+              "keyDeserializerType": "STRING",
+              "valueDeserializerType": "STRING"
+            },
+            {
               "name": "team-emottak.event.log",
               "location": "AIVEN",
               "keyDeserializerType": "STRING",
