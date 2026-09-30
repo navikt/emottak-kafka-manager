@@ -1,0 +1,36 @@
+name: 'Autodeploy to DEV and PROD'
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-build-and-push:
+    name: 'Test, build and push'
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    uses: ./.github/workflows/test-build-and-push.yaml
+    secrets: inherit
+
+  deploy-to-dev:
+    name: 'Deploy to dev'
+    needs: test-build-and-push
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      environment: dev-gcp
+      image: ${{ needs.test-build-and-push.outputs.image }}
+
+  deploy-to-prod:
+    name: 'Deploy to prod'
+    needs: test-build-and-push
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      environment: prod-gcp
+      image: ${{ needs.test-build-and-push.outputs.image }}

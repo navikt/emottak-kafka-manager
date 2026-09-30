@@ -1,0 +1,33 @@
+name: 'Build, push and deploy'
+run-name: "Deploying to ${{ inputs.environment }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - dev-gcp
+          - prod-gcp
+
+jobs:
+  test-build-and-push:
+    name: 'Test, build and push'
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    uses: ./.github/workflows/test-build-and-push.yaml
+    secrets: inherit
+
+  deploy:
+    name: 'Deploy to ${{ inputs.environment }}'
+    needs: test-build-and-push
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      environment: ${{ inputs.environment }}
+      image: ${{ needs.test-build-and-push.outputs.image }}
