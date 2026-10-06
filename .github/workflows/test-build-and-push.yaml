@@ -1,20 +1,20 @@
-name: 'Build, push and deploy to DEV'
+name: 'Test, build and push'
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+  workflow_call:
+    outputs:
+      image:
+        description: 'The docker image that was built and pushed'
+        value: ${{ jobs.test-build-and-push.outputs.image }}
 
 jobs:
-
   test-build-and-push:
     name: 'Test, build and push'
     permissions:
-      packages: 'write'
-      repository-projects: 'write'
-      contents: 'write'
+      contents: 'read'
       id-token: 'write'
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.docker-push.outputs.image }}
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v7
@@ -61,24 +61,3 @@ jobs:
           dockerfile: Dockerfile
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-
-    outputs:
-      image: ${{ steps.docker-push.outputs.image }}
-
-  deploy-to-dev:
-    name: 'Deploy app to dev'
-    needs: test-build-and-push
-    runs-on: ubuntu-latest
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-    steps:
-      - uses: actions/checkout@v7
-      - name: 'Deploy to DEV'
-        uses: nais/deploy/actions/deploy@v3
-        env:
-          CLUSTER: 'dev-gcp'
-          IMAGE: ${{ needs.test-build-and-push.outputs.image }}
-          RESOURCE: '.nais/nais.yaml'
-          VARS: '.nais/dev.yaml'
-

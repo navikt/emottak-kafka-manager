@@ -1,0 +1,36 @@
+name: 'Deploy'
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment to deploy to (dev-gcp or prod-gcp)'
+        required: true
+        type: string
+      image:
+        description: 'Docker image to deploy'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: 'Deploy app to ${{ inputs.environment }}'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - name: 'Validate environment'
+        if: ${{ inputs.environment != 'dev-gcp' && inputs.environment != 'prod-gcp' }}
+        run: |
+          echo "::error::Invalid environment '${{ inputs.environment }}'. Must be 'dev-gcp' or 'prod-gcp'."
+          exit 1
+
+      - uses: actions/checkout@v7
+
+      - name: 'Deploy to ${{ inputs.environment }}'
+        uses: nais/deploy/actions/deploy@v3
+        env:
+          CLUSTER: ${{ inputs.environment }}
+          IMAGE: ${{ inputs.image }}
+          RESOURCE: '.nais/nais.yaml'
+          VARS: '.nais/${{ inputs.environment }}.yaml'
