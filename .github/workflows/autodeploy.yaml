@@ -21,7 +21,7 @@ jobs:
       id-token: 'write'
     uses: ./.github/workflows/deploy.yaml
     with:
-      environment: dev-gcp
+      environment: dev
       image: ${{ needs.test-build-and-push.outputs.image }}
 
   deploy-to-prod:
@@ -32,5 +32,5 @@ jobs:
       id-token: 'write'
     uses: ./.github/workflows/deploy.yaml
     with:
-      environment: prod-gcp
+      environment: prod
       image: ${{ needs.test-build-and-push.outputs.image }}
